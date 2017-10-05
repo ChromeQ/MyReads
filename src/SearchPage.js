@@ -45,7 +45,6 @@ class SearchPage extends React.Component {
                     <ol className="books-grid">
                         {!!this.props.books.length && this.props.books.map((book, i) => (
                             <Book
-                                id={book.id}
                                 key={i}
                                 thumbnail={book.imageLinks && book.imageLinks.thumbnail}
                                 title={book.title}

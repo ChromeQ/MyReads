@@ -12,8 +12,6 @@ const Book = (props) => {
                 <div className="book-title">{props.title}</div>
                 {/* Some books do not have any authors so must protect against this */}
                 <div className="book-authors">{props.authors && props.authors.join(', ')}</div>
-                <strong>{props.id}</strong><br />
-                <i>{props.shelf}</i>
             </div>
         </li>
     );
