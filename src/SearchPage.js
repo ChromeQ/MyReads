@@ -3,19 +3,21 @@ import { Link } from 'react-router-dom';
 import Book from './Book';
 
 class SearchPage extends React.Component {
-    state = {
-        searched: false
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            searched: false,
+            query: props.query
+        };
     }
 
     componentDidMount() {
+        this.searchInput.value = this.state.query;
         this.searchInput.focus();
     }
 
-    componentWillUnmount() {
-        this.props.clearSearchResults();
-    }
-
-    handleSeachChange(event) {
+    handleSearchChange(event) {
         this.props.onSearchChange(event.target.value);
 
         if (!this.state.searched) {
@@ -27,7 +29,7 @@ class SearchPage extends React.Component {
         return (
             <div className="search-books">
                 <div className="search-books-bar">
-                    <Link to="/" className="close-search">Close</Link>
+                    <Link to="/" className="go-back">Close</Link>
                     <div className="search-books-input-wrapper">
                         {/*
                             NOTES: The search from BooksAPI is limited to a particular set of search terms.
@@ -37,25 +39,26 @@ class SearchPage extends React.Component {
                             However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                             you don't find a specific author or title. Every search is limited by search terms.
                         */}
-                        <input type="text" ref={(input) => { this.searchInput = input }} placeholder="Search by title or author" onChange={this.handleSeachChange.bind(this)} />
+                        <input type="text" ref={(input) => { this.searchInput = input }} placeholder="Search by title or author" onChange={this.handleSearchChange.bind(this)} />
 
                     </div>
                 </div>
                 <div className="search-books-results">
                     <ol className="books-grid">
                         {!!this.props.books.length && this.props.books.map((book, i) => (
-                            <Book
-                                key={i}
-                                thumbnail={book.imageLinks && book.imageLinks.thumbnail}
-                                title={book.title}
-                                authors={book.authors}
-                                shelf={book.shelf}
-                                onShelfChange={(shelf) => this.props.onShelfChange(book, shelf)}
-                            />
+                            <Link key={i} to={`/book/${book.id}`}>
+                                <Book
+                                    thumbnail={book.imageLinks && book.imageLinks.thumbnail}
+                                    title={book.title}
+                                    authors={book.authors}
+                                    shelf={book.shelf}
+                                    onShelfChange={(shelf) => this.props.onShelfChange(book, shelf)}
+                                />
+                            </Link>
                         ))}
 
-                        {!this.props.books.length && this.state.searched && (
-                            <div className="search-no-results">No results matching your query</div>
+                        {!this.props.books.length && this.searchInput && this.searchInput.value && this.state.searched && (
+                            <div className="no-results">No results matching your query</div>
                         )}
                     </ol>
                 </div>

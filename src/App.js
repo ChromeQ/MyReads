@@ -3,6 +3,7 @@ import { Route, Link } from 'react-router-dom';
 import * as BooksAPI from './BooksAPI';
 import Bookshelf from './Bookshelf';
 import SearchPage from './SearchPage';
+import DetailsPage from './DetailsPage';
 import './App.css';
 
 class BooksApp extends React.Component {
@@ -13,7 +14,8 @@ class BooksApp extends React.Component {
             read: 'Read'
         },
         books: [],
-        searchResults: []
+        searchResults: [],
+        query: ''
     }
 
     componentDidMount() {
@@ -35,8 +37,8 @@ class BooksApp extends React.Component {
         });
     }
 
-    handleSearchChange(value) {
-        BooksAPI.search(value, 10).then((results = []) => {
+    handleSearchChange(query) {
+        BooksAPI.search(query, 10).then((results = []) => {
             // The maxResults don't seem to work so slicing the required length here instead
             let searchResults = Array.isArray(results) ? results.slice(0, 10) : [];
 
@@ -48,25 +50,27 @@ class BooksApp extends React.Component {
             });
 
             this.setState({
-                searchResults
+                searchResults,
+                query
             });
         });
     }
 
     clearSearchResults() {
         this.setState({
-            searchResults: []
+            searchResults: [],
+            query: ''
         });
     }
 
     render() {
         return (
             <div className="app">
+                <div className="list-books-title">
+                    <Link to='/'><h1>MyReads</h1></Link>
+                </div>
                 <Route exact path='/' render={() => (
                     <div className="list-books">
-                        <div className="list-books-title">
-                            <h1>MyReads</h1>
-                        </div>
                         <div className="list-books-content">
                             {Object.keys(this.state.shelves).map((shelf, i) => (
                                 <Bookshelf
@@ -78,18 +82,32 @@ class BooksApp extends React.Component {
                             ))}
                         </div>
                         <div className="open-search">
-                            <Link to='/search'>Add a book</Link>
+                            <Link to='/search' onClick={this.clearSearchResults}>Add a book</Link>
                         </div>
                     </div>
                 )} />
                 <Route path='/search' render={() => (
                     <SearchPage
+                        query={this.state.query}
                         books={this.state.searchResults}
                         onSearchChange={this.handleSearchChange.bind(this)}
                         clearSearchResults={this.clearSearchResults.bind(this)}
                         onShelfChange={this.handleShelfChange.bind(this)}
                     />
                 )} />
+                <Route path='/book/:bookId' render={(route) => {
+                    const bookId = route.match.params.bookId;
+                    const book = this.state.books.find(book => book.id === bookId);
+
+                    return (
+                        <DetailsPage
+                            book={book}
+                            bookId={bookId}
+                            onShelfChange={this.handleShelfChange.bind(this)}
+                            history={route.history}
+                        />
+                    );
+                }} />
             </div>
         )
     }

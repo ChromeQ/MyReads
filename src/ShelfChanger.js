@@ -10,7 +10,7 @@ const ShelfChanger = (props) => {
 
     return (
         <div className="book-shelf-changer">
-            <select value={props.currentShelf || 'none'} onChange={(event) => props.onShelfChange(event.target.value)}>
+            <select value={props.currentShelf || 'none'} onClick={(event) => event.preventDefault()} onChange={(event) => props.onShelfChange(event.target.value)}>
                 <option value="" disabled>Move to...</option>
                 {Object.keys(shelves).map((shelf, i) => (
                     <option key={i} value={shelf}>{shelves[shelf]}</option>
