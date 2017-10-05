@@ -12,7 +12,8 @@ class BooksApp extends React.Component {
             wantToRead: 'Want to Read',
             read: 'Read'
         },
-        books: []
+        books: [],
+        searchResults: []
     }
 
     componentDidMount() {
@@ -25,8 +26,36 @@ class BooksApp extends React.Component {
         BooksAPI.update(book, shelf).then(() => {
             // Update the shelf of the book in the store (the response is not useful in my store structure)
             const books = this.state.books.map(b => (b.id === book.id) ? { ...b, shelf } : b);
+            const searchResults = this.state.searchResults.map(b => (b.id === book.id) ? { ...b, shelf } : b);
 
-            this.setState({ books });
+            this.setState({
+                books,
+                searchResults
+            });
+        });
+    }
+
+    handleSearchChange(value) {
+        BooksAPI.search(value, 10).then((results = []) => {
+            // The maxResults don't seem to work so slicing the required length here instead
+            let searchResults = Array.isArray(results) ? results.slice(0, 10) : [];
+
+            searchResults = searchResults.map(result => {
+                // If the book is in the state list then just pass that book along
+                const book = this.state.books.find(book => book.id === result.id);
+
+                return book || result;
+            });
+
+            this.setState({
+                searchResults
+            });
+        });
+    }
+
+    clearSearchResults() {
+        this.setState({
+            searchResults: []
         });
     }
 
@@ -54,7 +83,12 @@ class BooksApp extends React.Component {
                     </div>
                 )} />
                 <Route path='/search' render={() => (
-                    <SearchPage />
+                    <SearchPage
+                        books={this.state.searchResults}
+                        onSearchChange={this.handleSearchChange.bind(this)}
+                        clearSearchResults={this.clearSearchResults.bind(this)}
+                        onShelfChange={this.handleShelfChange.bind(this)}
+                    />
                 )} />
             </div>
         )

@@ -10,7 +10,7 @@ const Bookshelf = (props) => {
                     {props.books.map((book, i) => (
                         <Book
                             key={i}
-                            thumbnail={book.imageLinks.thumbnail}
+                            thumbnail={book.imageLinks && book.imageLinks.thumbnail}
                             title={book.title}
                             authors={book.authors}
                             shelf={book.shelf}
