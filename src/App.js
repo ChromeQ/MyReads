@@ -82,7 +82,7 @@ class BooksApp extends React.Component {
                             ))}
                         </div>
                         <div className="open-search">
-                            <Link to='/search' onClick={this.clearSearchResults}>Add a book</Link>
+                            <Link to='/search' onClick={this.clearSearchResults.bind(this)}>Add a book</Link>
                         </div>
                     </div>
                 )} />

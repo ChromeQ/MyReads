@@ -1,5 +1,5 @@
 import React from 'react';
-// import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import * as BooksAPI from './BooksAPI';
 import Book from './Book';
 
@@ -57,7 +57,7 @@ class DetailsPage extends React.Component {
                                 )}
                                 <tr>
                                     <td>Authors:</td>
-                                    <td>{book.authors.join(', ')}</td>
+                                    <td>{book.authors && book.authors.join(', ')}</td>
                                 </tr>
                                 <tr>
                                     <td>Description:</td>
@@ -91,5 +91,12 @@ class DetailsPage extends React.Component {
         );
     }
 }
+
+DetailsPage.propTypes = {
+    book: PropTypes.object,
+    bookId: PropTypes.string.isRequired,
+    history: PropTypes.object.isRequired,
+    onShelfChange: PropTypes.func.isRequired
+};
 
 export default DetailsPage;

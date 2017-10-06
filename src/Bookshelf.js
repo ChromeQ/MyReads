@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Book from './Book';
 
@@ -14,7 +15,7 @@ const Bookshelf = (props) => {
                                 <Book
                                     thumbnail={book.imageLinks && book.imageLinks.thumbnail}
                                     title={book.title}
-                                    authors={book.authors}
+                                    authors={book.authors || []}
                                     shelf={book.shelf}
                                     onShelfChange={(shelf) => props.onShelfChange(book, shelf)}
                                 />
@@ -27,6 +28,12 @@ const Bookshelf = (props) => {
             </div>
         </div>
     )
+};
+
+Bookshelf.propTypes = {
+    books: PropTypes.arrayOf(PropTypes.object).isRequired,
+    title: PropTypes.string.isRequired,
+    onShelfChange: PropTypes.func.isRequired
 };
 
 export default Bookshelf;

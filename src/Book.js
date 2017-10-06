@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ShelfChanger from './ShelfChanger';
 
 const Book = (props) => {
@@ -10,9 +11,19 @@ const Book = (props) => {
             </div>
             <div className="book-title">{props.title}</div>
             {/* Some books do not have any authors so must protect against this */}
-            <div className="book-authors">{props.authors && props.authors.join(', ')}</div>
+            {props.authors && (
+                <div className="book-authors">{props.authors.join(', ')}</div>
+            )}
         </li>
     );
+};
+
+Book.propTypes = {
+    authors: PropTypes.arrayOf(PropTypes.string),
+    onShelfChange: PropTypes.func.isRequired,
+    shelf: PropTypes.string,
+    thumbnail: PropTypes.string.isRequired,
+    title: PropTypes.string
 };
 
 export default Book;

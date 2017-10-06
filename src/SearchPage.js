@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Book from './Book';
 
@@ -50,7 +51,7 @@ class SearchPage extends React.Component {
                                 <Book
                                     thumbnail={book.imageLinks && book.imageLinks.thumbnail}
                                     title={book.title}
-                                    authors={book.authors}
+                                    authors={book.authors || []}
                                     shelf={book.shelf}
                                     onShelfChange={(shelf) => this.props.onShelfChange(book, shelf)}
                                 />
@@ -66,5 +67,13 @@ class SearchPage extends React.Component {
         );
     }
 }
+
+SearchPage.propTypes = {
+    query: PropTypes.string.isRequired,
+    books: PropTypes.arrayOf(PropTypes.object).isRequired,
+    onSearchChange: PropTypes.func.isRequired,
+    clearSearchResults: PropTypes.func.isRequired,
+    onShelfChange:PropTypes.func.isRequired
+};
 
 export default SearchPage;
